@@ -5,13 +5,20 @@ import { AppService } from './app.service';
 import { BlogModule } from './blog/blog.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { async } from 'rxjs';
+import { GraphdemoModule } from './graphdemo/graphdemo.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { LessonModule } from './lesson/lesson.module';
+import { LessonResolver } from './lesson/lesson.resolver';
+
 
 @Module({
   imports: [
+    GraphQLModule.forRoot({
+      autoSchemaFile: true,
+    }),
     ConfigModule.forRoot({ envFilePath: [`.env.stage.${process.env.STAGE}`] }),
 
-    BlogModule,
+    // BlogModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -25,13 +32,30 @@ import { async } from 'rxjs';
           port: configService.get('DB_PORT'),
           database: configService.get('DB_DATABASE'),
           username: configService.get('DB_USERNAME'),
-          password: configService.get('DB_PASSWORD')
+          password: configService.get('DB_PASSWORD'),
         }
       }
-
-
     }),
-    AuthModule
+
+
+
+    // TypeOrmModule.forRoot({
+
+    //   type: 'sqlite',
+
+
+    //   database: ':memory:',
+    //   entities: ['dist/**/*.entity{.ts,.js}'],
+    //   synchronize: true
+
+    // }),
+
+
+    // }),
+    // AuthModule,
+    // GraphdemoModule,
+    LessonModule,
+
 
   ],
   controllers: [AppController],
